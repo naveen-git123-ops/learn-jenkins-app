@@ -1,10 +1,12 @@
 pipeline {
     agent any
+
+    environment {
         NETLIFY_SITE_ID = 'fe661f0a-53b7-404c-9b1d-565078846f55'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+    }
 
     stages {
-        /*
 
         stage('Build') {
             agent {
@@ -24,7 +26,6 @@ pipeline {
                 '''
             }
         }
-        */
 
         stage('Tests') {
             parallel {
@@ -65,10 +66,10 @@ pipeline {
                             npx playwright test  --reporter=html
                         '''
                     }
-    post {
-        always {
-            junit 'jest-results/junit.xml'
-            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, icon: '', keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+
+                    post {
+                        always {
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }
                 }
